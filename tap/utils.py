@@ -142,7 +142,7 @@ def get_argument_name(*name_or_flags) -> str:
     if len(name_or_flags) != 1:
         raise ValueError(f'There should only be a single canonical name for argument {name_or_flags}!')
 
-    return name_or_flags[0].lstrip('-')
+    return name_or_flags[0].lstrip('-').replace('-', '_')
 
 
 def get_dest(*name_or_flags, **kwargs) -> str:

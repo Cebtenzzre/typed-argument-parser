@@ -138,28 +138,29 @@ class Tap(ArgumentParser):
             and variable != 'help'
             and 'default' not in kwargs
             and kwargs.get('action') != 'version'
+            and 'dest' not in kwargs
         ):
             kwargs['required'] = kwargs.get('required', not hasattr(self, variable))
 
         # Set help if necessary
         if 'help' not in kwargs:
-            kwargs['help'] = '('
-
-            # Type
-            if variable in self._annotations:
-                kwargs['help'] += type_to_str(self._annotations[variable]) + ', '
-
-            # Required/default
-            if kwargs.get('required', False):
-                kwargs['help'] += 'required'
-            else:
-                kwargs['help'] += f'default={kwargs.get("default", None)}'
-
-            kwargs['help'] += ')'
-
-            # Description
             if variable in self.class_variables:
-                kwargs['help'] += ' ' + self.class_variables[variable]['comment']
+                # Description
+                kwargs['help'] = self.class_variables[variable]['comment'].replace('%', '%%')
+            else:
+                kwargs['help'] = '('
+
+                # Type
+                if variable in self._annotations:
+                    kwargs['help'] += type_to_str(self._annotations[variable]) + ', '
+
+                # Required/default
+                if kwargs.get('required', False):
+                    kwargs['help'] += 'required'
+                else:
+                    kwargs['help'] += f'default={kwargs.get("default", None)}'
+
+                kwargs['help'] += ')'
 
         # Set other kwargs where not provided
         if variable in self._annotations:
